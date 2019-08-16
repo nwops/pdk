@@ -153,8 +153,9 @@ module PDK
         requirement_strings = metadata_requirement['version_requirement'].scan(pattern).map do |req|
           req.compact.join(' ')
         end
-
         gem_requirement = Gem::Requirement.create(requirement_strings)
+        PDK.logger.info(find_gem(gem_requirement))
+
         find_gem(gem_requirement)
       end
 

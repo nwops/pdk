@@ -13,7 +13,7 @@ describe PDK::Module::Convert do
       expect(updated_metadata).to include('template-url' => 'http://my.test/template.git', 'template-ref' => 'v1.2.3')
     end
   end
-
+  PDK::Util::TemplateURI.new({'template-url' => 'git@my.test:test/template.git', 'template-ref' => 'v1.2.3'})
   shared_context 'prompt to continue' do |value|
     before(:each) do
       allow(PDK::CLI::Util).to receive(:prompt_for_yes).with(anything).and_return(value)
