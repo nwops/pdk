@@ -117,10 +117,17 @@ module PDK
       end
       module_function :check_for_deprecated_puppet
 
-      def puppet_from_opts_or_env(opts)
-        use_puppet_dev = (opts || {})[:'puppet-dev'] || ENV['PDK_PUPPET_DEV']
-        desired_puppet_version = (opts || {})[:'puppet-version'] || ENV['PDK_PUPPET_VERSION']
-        desired_pe_version = (opts || {})[:'pe-version'] || ENV['PDK_PE_VERSION']
+      # @param opts [Hash] - the pdk options ot use, defaults to empty hash
+      # @option opts [String] :'puppet-dev' Use the puppet development version, default to PDK_PUPPET_DEV env
+      # @option opts [String] :'puppet-version' Puppet version to use, default to PDK_PUPPET_VERSION env
+      # @option opts [String] :'pe-version' PE Puppet version to use, default to PDK_PE_VERSION env
+      # @param logging_disabled [Boolean] - disable logging of PDK info
+      # @return [Hash] - return hash of { gemset: <>, ruby_version: 2.x.x }
+      def puppet_from_opts_or_env(opts, logging_disabled = false)
+        opts ||= {}
+        use_puppet_dev = opts.fetch(:'puppet-dev', ENV['PDK_PUPPET_DEV'])
+        desired_puppet_version = opts.fetch(:'puppet-version', ENV['PDK_PUPPET_VERSION'])
+        desired_pe_version = opts.fetch(:'pe-version', ENV['PDK_PE_VERSION'])
 
         begin
           puppet_env =
@@ -138,9 +145,11 @@ module PDK
         end
 
         # Notify user of what Ruby version will be used.
-        PDK.logger.info(_('Using Ruby %{version}') % {
-          version: puppet_env[:ruby_version],
-        })
+        unless logging_disabled
+          PDK.logger.info(_('Using Ruby %{version}') % {
+            version: puppet_env[:ruby_version],
+          })
+        end
 
         check_for_deprecated_puppet(puppet_env[:gem_version])
 
@@ -150,6 +159,7 @@ module PDK
         gemset.each do |gem, version|
           next if version.nil?
 
+          next if logging_disabled
           PDK.logger.info(_('Using %{gem} %{version}') % {
             gem: gem.to_s.capitalize,
             version: version,
