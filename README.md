@@ -105,6 +105,20 @@ This command runs all available unit tests.
 
 ## Experimental features
 
+### `pdk console` command
+The pdk console command executes a session of the puppet debugger when inside a module and allows for exploration of
+puppet code.  See the official [puppet debugger site](https://www.puppet-debugger.com) for more info.
+
+Puppet debugger docs also live [here](https://docs.puppet-debugger.com)
+
+To use just execute `pdk console` from inside your module directory.  You can also supply the `--puppet-version` or `--pe-version` or `--puppet-dev` to swap out the puppet version when using the debugger.
+
+Example:
+
+* `~/modules/ntp $ pdk console --puppet-version=5`
+* `~/modules/ntp $ pdk console --pe-version=2018.1`
+
+
 ### `pdk bundle` command
 
 This command executes arbitrary commands in a bundler context within the module you're currently working on. Arguments to this command are passed straight through to bundler. This command is experimental  and can lead to errors that can't be resolved by PDK itself.
